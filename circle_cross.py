@@ -69,7 +69,7 @@ def if_dead_heat(a1, a2, a3, a4, a5, a6, a7, a8, a9, win):
     return dead_heat
 
 
-def put_sign_to_board(board, move: int, sign: str):
+def put_sign_to_board(board, move: int, sign: str, computer_move):
     x = (move-1)//3
     y = (move+2) % 3
     if board[x, y] == str(move):
@@ -77,7 +77,8 @@ def put_sign_to_board(board, move: int, sign: str):
         possible_of_move = True
     else:
         possible_of_move = False
-        print("This place is busy")
+        if computer_move == False:
+            print("This place is busy")
     return board, possible_of_move
 
 
@@ -158,7 +159,7 @@ def signs():
 
 def computer_moves(
         board, computer_sign, level, first_move,
-        number_of_move, your_sign
+        number_of_move, your_sign, computer_turn
 ):
     actual_situation = rename_coordinates(board)
     a1 = actual_situation[0]
@@ -211,7 +212,7 @@ def computer_moves(
                         if computer_move == None:
                             computer_move = random.randint(1, 9)
         putting = put_sign_to_board(
-            board, computer_move, computer_sign
+            board, computer_move, computer_sign, computer_turn
         )
         possible_of_move = putting[1]
     print("computer picked place: ", computer_move)
@@ -291,7 +292,7 @@ def computer_first_move():
     return computer_move, first_move
 
 
-def your_moves(board, your_sign):
+def your_moves(board, your_sign, computer_turn):
     possible_of_move = False
     your_move = ""
     while possible_of_move == False:
@@ -305,7 +306,7 @@ def your_moves(board, your_sign):
                 print("Na planszy nie ma takiego pola")
             else:
                 putting = put_sign_to_board(
-                    board, your_move, your_sign
+                    board, your_move, your_sign, computer_turn
                 )
                 possible_of_move = putting[1]
     board = putting[0]
@@ -331,12 +332,12 @@ def game():
         if computer_turn:
             computer_action = computer_moves(
                 board, computer_sign, level, first_move,
-                number_of_move, your_sign
+                number_of_move, your_sign, computer_turn
             )
             board, first_move = computer_action
             current_result = result(board, first_player)
         else:
-            board = your_moves(board, your_sign)
+            board = your_moves(board, your_sign, computer_turn)
             current_result = result(board, "you")
         computer_turn = not computer_turn
         number_of_move += 1
